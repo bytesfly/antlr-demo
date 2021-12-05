@@ -12,6 +12,7 @@
     <modules>
 
         <module>array-init</module>
+        <module>calculator</module>
     </modules>
 
     <properties>

@@ -32,7 +32,7 @@ public class IntToStringListener extends ArrayInitBaseListener {
     }
 
     /**
-     * Translate integers to 4-digit hexadecimal strings prefixed with \\u
+     * Translate integers to strings with ""
      */
     @Override
     public void enterValue(ArrayInitParser.ValueContext ctx) {

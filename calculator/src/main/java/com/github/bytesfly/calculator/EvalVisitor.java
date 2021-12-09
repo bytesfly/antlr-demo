@@ -9,39 +9,40 @@ import java.util.Map;
 public class EvalVisitor extends ExprBaseVisitor<Integer> {
 
     /**
-     * "memory" for our calculator; variable/value pairs go here
+     * 存放变量名和变量值的对应关系
      */
     private final Map<String, Integer> memory = new HashMap<>();
 
     /**
-     * ID '=' expr NEWLINE
+     * ID '=' expr NEWLINE  # assign
      */
     @Override
     public Integer visitAssign(ExprParser.AssignContext ctx) {
-        // id is left-hand side of '='
+        // 获取变量名
         String id = ctx.ID().getText();
-        // compute value of expression on right
-        int value = visit(ctx.expr());
-        // store it in our memory
+        // 计算表达式的值
+        Integer value = visit(ctx.expr());
+        // 暂存到map中
         memory.put(id, value);
+
         return value;
     }
 
     /**
-     * expr NEWLINE
+     * expr NEWLINE  # printExpr
      */
     @Override
     public Integer visitPrintExpr(ExprParser.PrintExprContext ctx) {
-        // evaluate the expr child
+        // 计算表达式的值
         Integer value = visit(ctx.expr());
-        // print the result
+        // 打印
         System.out.println(value);
-        // return dummy value
+
         return 0;
     }
 
     /**
-     * INT
+     * INT  # int
      */
     @Override
     public Integer visitInt(ExprParser.IntContext ctx) {
@@ -49,55 +50,56 @@ public class EvalVisitor extends ExprBaseVisitor<Integer> {
     }
 
     /**
-     * ID
+     * ID  # id
      */
     @Override
     public Integer visitId(ExprParser.IdContext ctx) {
         String id = ctx.ID().getText();
-        if (memory.containsKey(id)) {
-            return memory.get(id);
-        }
-        return 0;
+        return memory.getOrDefault(id, 0);
     }
 
     /**
-     * expr op=('*'|'/') expr
+     * expr op=('*'|'/') expr  # MulDiv
      */
     @Override
     public Integer visitMulDiv(ExprParser.MulDivContext ctx) {
-        // get value of left subexpression
-        int left = visit(ctx.expr(0));
-        // get value of right subexpression
-        int right = visit(ctx.expr(1));
+        // 计算左侧子表达式的值
+        Integer left = visit(ctx.expr(0));
+        // 计算右侧子表达式的值
+        Integer right = visit(ctx.expr(1));
+
+        // 根据不同的操作符做相应的运算
         if (ctx.op.getType() == ExprParser.MUL) {
             return left * right;
+        } else {
+            return left / right;
         }
-        // must be DIV
-        return left / right;
     }
 
     /**
-     * expr op=('+'|'-') expr
+     * expr op=('+'|'-') expr  # AddSub
      */
     @Override
     public Integer visitAddSub(ExprParser.AddSubContext ctx) {
-        // get value of left subexpression
-        int left = visit(ctx.expr(0));
-        // get value of right subexpression
-        int right = visit(ctx.expr(1));
+        // 计算左侧子表达式的值
+        Integer left = visit(ctx.expr(0));
+        // 计算右侧子表达式的值
+        Integer right = visit(ctx.expr(1));
+
+        // 根据不同的操作符做相应的运算
         if (ctx.op.getType() == ExprParser.ADD) {
             return left + right;
+        } else {
+            return left - right;
         }
-        // must be SUB
-        return left - right;
     }
 
     /**
-     * '(' expr ')'
+     * '(' expr ')'  # parens
      */
     @Override
     public Integer visitParens(ExprParser.ParensContext ctx) {
-        // return child expr's value
+        // 返回子表达式的值
         return visit(ctx.expr());
     }
 }

@@ -28,7 +28,9 @@ public class Calc {
         // 针对prog规则，开始语法分析
         ParseTree tree = parser.prog();
 
+        // 创建访问器对象
         EvalVisitor eval = new EvalVisitor();
+        // 访问语法树
         eval.visit(tree);
     }
 }

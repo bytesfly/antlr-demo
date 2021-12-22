@@ -14,6 +14,7 @@
         <module>array-init</module>
         <module>calculator</module>
         <module>csv-loader</module>
+        <module>json2xml</module>
     </modules>
 
     <properties>
